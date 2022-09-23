@@ -1,18 +1,19 @@
-import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { Dashboard, Login } from "./pages";
+import { AuthGuard } from "./guards";
+import { PrivateRoutes, PublicRoutes } from "./models/routes";
+import { Login, Private } from "./pages";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="" element={<Login />} />
-          <Route path="*" element={<>NOT FOUND</>} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="" element={<Navigate to={PrivateRoutes.PRIVATE} />} />
+          <Route path={PublicRoutes.LOGIN} element={<Login />} />
+          <Route element={<AuthGuard />}>
+            <Route path={`${PrivateRoutes.PRIVATE}/*`} element={<Private />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
