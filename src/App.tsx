@@ -3,8 +3,10 @@ import { Provider } from "react-redux";
 import { BrowserRouter, Navigate, Route } from "react-router-dom";
 import "./App.css";
 import { Logout } from "./components";
-import { AuthGuard } from "./guards";
+import { AuthGuard, RoleGuard } from "./guards";
+import { Roles } from "./models";
 import { PrivateRoutes, PublicRoutes } from "./models/routes";
+import { Dashboard } from "./pages";
 import { store } from "./redux";
 import RoutesWithNotFound from "./utilities/RoutesWithNotFound";
 
@@ -24,7 +26,7 @@ function App() {
                 element={<Navigate to={PrivateRoutes.PRIVATE} />}
               />
               <Route path={PublicRoutes.LOGIN} element={<Login />} />
-              <Route element={<AuthGuard />}>
+              <Route element={<AuthGuard privateRoute />}>
                 <Route
                   path={`${PrivateRoutes.PRIVATE}/*`}
                   element={<Private />}

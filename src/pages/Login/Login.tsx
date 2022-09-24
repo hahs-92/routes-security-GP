@@ -1,8 +1,11 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createUser } from "../../redux/states/user";
+import { createUser, resetUser, UserKey } from "../../redux/states/user";
 import { getMorty } from "../../services";
-import { PrivateRoutes } from "../../models/routes";
+import { PrivateRoutes, PublicRoutes } from "../../models/routes";
+import { useEffect } from "react";
+import { clearLocalStorage } from "../../utilities";
+import { Roles } from "../../models/roles";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -11,11 +14,17 @@ const Login = () => {
   const login = async () => {
     try {
       const result = await getMorty();
-      dispatch(createUser(result));
+      dispatch(createUser({ ...result, role: Roles.ADMIN }));
 
       navigate(`/${PrivateRoutes.PRIVATE}`, { replace: true });
     } catch (error) {}
   };
+
+  useEffect(() => {
+    clearLocalStorage(UserKey);
+    dispatch(resetUser());
+    navigate(`/${PublicRoutes.LOGIN}`, { replace: true });
+  }, []);
 
   return (
     <div>
